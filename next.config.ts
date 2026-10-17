@@ -1,14 +1,15 @@
 import type {NextConfig} from 'next';
 
-const isGithubActions = process.env.GITHUB_ACTIONS || false;
-let repo = '';
-if (isGithubActions && process.env.GITHUB_REPOSITORY) {
+// Detect repository name for GitHub Pages (e.g. gear12432/gloan -> gloan)
+let repo = 'gloan';
+if (process.env.GITHUB_REPOSITORY) {
   repo = process.env.GITHUB_REPOSITORY.replace(/.*?\//, '');
 }
 
-const basePath = repo
-  ? `/${repo}`
-  : process.env.NEXT_PUBLIC_BASE_PATH || '';
+// In production static export, default basePath to /gloan unless explicitly overridden
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH !== undefined
+  ? process.env.NEXT_PUBLIC_BASE_PATH
+  : (process.env.NODE_ENV === 'production' && repo ? `/${repo}` : '');
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,

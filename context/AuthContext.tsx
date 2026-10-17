@@ -57,7 +57,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    // Safety fallback: Ensure loading becomes false after max 1.5s so screen always renders
+    const fallbackTimer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+
     const unsubscribeAuth = onAuthStateChanged(auth, async (currentUser) => {
+      clearTimeout(fallbackTimer);
       setUser(currentUser);
       if (currentUser) {
         // Fetch or create profile
@@ -97,7 +103,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     });
 
-    return () => unsubscribeAuth();
+    return () => {
+      clearTimeout(fallbackTimer);
+      unsubscribeAuth();
+    };
   }, []);
 
   // Realtime subscribe to customers and transactions

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "node -e \"const fs = require('fs'); if (fs.existsSync('out')) { fs.writeFileSync('out/.nojekyll', ''); }\"",
+    "postbuild": "node -e \"const fs = require('fs'); if (fs.existsSync('out')) { fs.writeFileSync('out/.nojekyll', ''); if (fs.existsSync('out/index.html')) { fs.copyFileSync('out/index.html', 'out/404.html'); } }\"",
     "deploy": "next build && gh-pages -d out -t true",
     "start": "next start",
     "lint": "eslint .",
