@@ -40,6 +40,8 @@ export interface UserProfile {
   fullName: string;
   businessName: string;
   mobileNumber: string;
+  businessAddress?: string;
+  profileImageUrl?: string;
   email: string;
   createdAt: string;
 }
@@ -50,4 +52,5 @@ export type ActiveScreen =
   | 'ADD_CUSTOMER'
   | 'EDIT_CUSTOMER'
   | 'CUSTOMER_DETAILS'
-  | 'TRANSACTION_LEDGER';
+  | 'TRANSACTION_LEDGER'
+  | 'PROFILE';

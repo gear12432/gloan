@@ -9,6 +9,7 @@ import AddEditCustomerView from '@/components/AddEditCustomerView';
 import CustomerDetailsView from '@/components/CustomerDetailsView';
 import TransactionLedgerView from '@/components/TransactionLedgerView';
 import NotificationModal from '@/components/NotificationModal';
+import ProfileView from '@/components/ProfileView';
 import ProfileModal from '@/components/ProfileModal';
 import { Customer, ActiveScreen } from '@/types/finance';
 
@@ -137,7 +138,13 @@ function MainApp() {
             setActiveScreen('CUSTOMER_DETAILS');
           }}
           onOpenNotifications={() => setIsNotificationOpen(true)}
-          onOpenProfileModal={() => setIsProfileOpen(true)}
+          onOpenProfileModal={() => setActiveScreen('PROFILE')}
+        />
+      )}
+
+      {activeScreen === 'PROFILE' && (
+        <ProfileView
+          onBack={() => setActiveScreen('DASHBOARD')}
         />
       )}
 

@@ -136,10 +136,10 @@ export default function CustomerDetailsView({
                 </div>
 
                 <div>
-                  <h2 className="text-lg sm:text-xl font-black text-slate-900">
+                  <h2 className="text-lg sm:text-xl font-black text-black">
                     {customer.customerName}
                   </h2>
-                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-slate-500 font-bold mt-0.5">
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-black font-bold mt-0.5">
                     <span>ID: {customer.customerId}</span>
                     <button
                       onClick={handleCopyId}
@@ -149,7 +149,7 @@ export default function CustomerDetailsView({
                       {copied ? (
                         <Check className="w-4 h-4 text-emerald-600" />
                       ) : (
-                        <Copy className="w-4 h-4 text-slate-400" />
+                        <Copy className="w-4 h-4 text-black" />
                       )}
                     </button>
                   </div>
@@ -158,56 +158,56 @@ export default function CustomerDetailsView({
 
               {/* Loan Amount Box */}
               <div className="bg-slate-50 border border-slate-200/80 p-3 px-4 rounded-2xl flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-teal-100 text-[#0d9488] flex items-center justify-center">
-                  <Wallet className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-xl bg-slate-200 text-black flex items-center justify-center">
+                  <Wallet className="w-5 h-5 text-black" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                  <p className="text-[10px] font-black text-black uppercase tracking-wider">
                     LOAN AMOUNT
                   </p>
-                  <p className="text-sm sm:text-base font-black text-red-600">
+                  <p className="text-sm sm:text-base font-black text-black">
                     ₹{customer.subTotalLoanAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Quick Action Grid (4 Cards) */}
+            {/* Quick Action Grid (4 Cards with Black Icons & Black Text) */}
             <div className="grid grid-cols-4 gap-3 mt-6 pt-5 border-t border-slate-100">
               {/* 1. Call */}
               <button
                 onClick={handleCall}
-                className="bg-teal-50/70 hover:bg-teal-100/80 text-[#0d9488] p-3 sm:p-4 rounded-2xl border border-teal-100/80 flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs"
+                className="bg-slate-100 hover:bg-slate-200 text-black p-3 sm:p-4 rounded-2xl border border-slate-300 flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs"
               >
-                <PhoneCall className="w-5 h-5 sm:w-6 sm:h-6" />
-                <span className="text-xs font-bold">Call</span>
+                <PhoneCall className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
+                <span className="text-xs font-black text-black">Call</span>
               </button>
 
               {/* 2. Edit */}
               <button
                 onClick={onEdit}
-                className="bg-teal-50/70 hover:bg-teal-100/80 text-[#0d9488] p-3 sm:p-4 rounded-2xl border border-teal-100/80 flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs"
+                className="bg-slate-100 hover:bg-slate-200 text-black p-3 sm:p-4 rounded-2xl border border-slate-300 flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs"
               >
-                <Edit3 className="w-5 h-5 sm:w-6 sm:h-6" />
-                <span className="text-xs font-bold">Edit</span>
+                <Edit3 className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
+                <span className="text-xs font-black text-black">Edit</span>
               </button>
 
               {/* 3. Mark Status */}
               <button
                 onClick={handleToggleStatus}
-                className="bg-teal-50/70 hover:bg-teal-100/80 text-[#0d9488] p-3 sm:p-4 rounded-2xl border border-teal-100/80 flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs"
+                className="bg-slate-100 hover:bg-slate-200 text-black p-3 sm:p-4 rounded-2xl border border-slate-300 flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs"
               >
-                <UserCheck className="w-5 h-5 sm:w-6 sm:h-6" />
-                <span className="text-xs font-bold truncate max-w-full">Mark ...</span>
+                <UserCheck className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
+                <span className="text-xs font-black text-black truncate max-w-full">Mark ...</span>
               </button>
 
               {/* 4. Ledger */}
               <button
                 onClick={onOpenLedger}
-                className="bg-teal-50/70 hover:bg-teal-100/80 text-[#0d9488] p-3 sm:p-4 rounded-2xl border border-teal-100/80 flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs"
+                className="bg-slate-100 hover:bg-slate-200 text-black p-3 sm:p-4 rounded-2xl border border-slate-300 flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs"
               >
-                <Receipt className="w-5 h-5 sm:w-6 sm:h-6" />
-                <span className="text-xs font-bold">Ledger</span>
+                <Receipt className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
+                <span className="text-xs font-black text-black">Ledger</span>
               </button>
             </div>
           </div>

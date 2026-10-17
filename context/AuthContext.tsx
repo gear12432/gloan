@@ -40,6 +40,7 @@ interface AuthContextType {
   updateCustomer: (id: string, data: Partial<Customer>) => Promise<void>;
   deleteCustomer: (id: string) => Promise<void>;
   recordPayment: (customer: Customer, amount: number, description: string) => Promise<void>;
+  updateProfile: (data: Partial<UserProfile>) => Promise<void>;
   updateProfileName: (businessName: string, fullName: string) => Promise<void>;
 }
 
@@ -278,7 +279,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const newTotalPaid = (customer.totalPaid || 0) + amount;
       const newRemaining = Math.max(0, customer.subTotalLoanAmount - newTotalPaid);
-      const newStatus: CustomerStatus = newRemaining === 0 ? 'SUCCESSFUL' : customer.status;
+      const newStatus: CustomerStatus = 'SUCCESSFUL';
 
       // 1. Add transaction record
       const dateStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
@@ -311,11 +312,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const updateProfileName = async (businessName: string, fullName: string) => {
+  const updateProfile = async (data: Partial<UserProfile>) => {
     if (!user) return;
     const userDocRef = doc(db, 'users', user.uid);
-    await updateDoc(userDocRef, { businessName, fullName });
-    setUserProfile(prev => prev ? { ...prev, businessName, fullName } : null);
+    await updateDoc(userDocRef, data);
+    setUserProfile(prev => prev ? { ...prev, ...data } : null);
+  };
+
+  const updateProfileName = async (businessName: string, fullName: string) => {
+    await updateProfile({ businessName, fullName });
   };
 
   return (
@@ -333,6 +338,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       updateCustomer,
       deleteCustomer,
       recordPayment,
+      updateProfile,
       updateProfileName
     }}>
       {children}

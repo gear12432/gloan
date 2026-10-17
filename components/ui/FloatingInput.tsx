@@ -34,12 +34,12 @@ export default function FloatingInput({
       <div className="relative w-full">
         {/* Left Icon if provided */}
         {Icon && (
-          <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10">
-            <Icon className={`w-4 h-4 transition-colors ${isFocused ? 'text-[#0d9488]' : 'text-slate-400'}`} />
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10">
+            <Icon className={`w-5 h-5 transition-colors ${isFocused ? 'text-[#0d9488]' : 'text-slate-400'}`} />
           </div>
         )}
 
-        {/* Input Element */}
+        {/* Input Element with Bold & Larger Font */}
         <input
           {...props}
           type={type}
@@ -54,15 +54,15 @@ export default function FloatingInput({
             if (onBlur) onBlur(e);
           }}
           placeholder=" "
-          className={`w-full bg-white border rounded-xl py-3 text-sm font-semibold text-slate-900 transition-all duration-200 outline-none ${
-            Icon ? 'pl-10 pr-4' : 'px-4'
+          className={`w-full bg-white border-2 rounded-2xl py-3.5 text-base sm:text-lg font-extrabold text-slate-900 transition-all duration-200 outline-none ${
+            Icon ? 'pl-11 pr-4' : 'px-4'
           } ${
             readOnlyText ? 'bg-slate-50 border-slate-200' : ''
           } ${
             error
               ? 'border-red-400 focus:ring-2 focus:ring-red-400/30'
               : isFocused
-              ? 'border-[#0d9488] ring-2 ring-[#0d9488]/20 shadow-xs'
+              ? 'border-[#0d9488] ring-4 ring-[#0d9488]/15 shadow-xs'
               : 'border-slate-200 hover:border-slate-300'
           } ${className}`}
         />
@@ -70,18 +70,18 @@ export default function FloatingInput({
         {/* Smooth Floating Label */}
         <label
           className={`absolute pointer-events-none transition-all duration-200 ease-out z-10 px-1 font-bold rounded ${
-            Icon ? 'left-9' : 'left-3'
+            Icon ? 'left-10' : 'left-3.5'
           } ${
             isFloating
-              ? '-top-2.5 text-[11px] bg-white text-[#0d9488] shadow-2xs'
-              : 'top-1/2 -translate-y-1/2 text-xs text-slate-400 font-medium'
+              ? '-top-3 text-xs sm:text-xs bg-white text-[#0d9488] font-black tracking-wide shadow-2xs'
+              : 'top-1/2 -translate-y-1/2 text-sm sm:text-base text-slate-400 font-semibold'
           } ${error ? 'text-red-500' : ''}`}
         >
           {label} {required && <span className="text-red-500">*</span>}
         </label>
       </div>
 
-      {error && <p className="text-[11px] font-semibold text-red-500 pl-1">{error}</p>}
+      {error && <p className="text-xs font-bold text-red-500 pl-1">{error}</p>}
     </div>
   );
 }
