@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Calculator, X, CheckCircle2, IndianRupee, FileText } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, IndianRupee, FileText, Calculator } from 'lucide-react';
+import { motion } from 'motion/react';
 import { Customer } from '@/types/finance';
 import { useAuth } from '@/context/AuthContext';
 import FloatingInput from './ui/FloatingInput';
@@ -55,96 +56,103 @@ export default function RecordPaymentModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95">
-        
-        {/* Header */}
-        <div className="flex items-start justify-between pb-4 border-b border-slate-100">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-teal-50 text-[#0d9488] flex items-center justify-center">
-              <Calculator className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="text-base font-extrabold text-slate-900">
-                Record Payment & Calculation
-              </h2>
-              <p className="text-xs font-semibold text-slate-500">
-                {customer.customerName} ({customer.customerId})
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1 rounded-full text-slate-400 hover:text-slate-600 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+    <motion.div 
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 15 }}
+      transition={{ duration: 0.25 }}
+      className="fixed inset-0 z-50 bg-[#f3f6f9] w-full min-h-screen h-full overflow-y-auto flex flex-col"
+    >
+      {/* Top Teal Full Width Header */}
+      <div className="bg-[#0d9488] text-white py-5 px-4 sm:px-6 rounded-b-[2rem] shadow-md flex items-center justify-between">
+        <button
+          type="button"
+          onClick={onClose}
+          className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </button>
+
+        <div className="text-center">
+          <h1 className="text-base sm:text-lg font-extrabold uppercase tracking-wide flex items-center justify-center gap-2">
+            <Calculator className="w-5 h-5" />
+            Record Payment & Calculation
+          </h1>
+          <p className="text-xs text-teal-100 font-semibold mt-0.5">
+            {customer.customerName} ({customer.customerId})
+          </p>
         </div>
 
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="mt-5 space-y-4 pt-1">
+        <div className="w-10" />
+      </div>
+
+      {/* Main Full Width Form Container */}
+      <main className="max-w-3xl w-full mx-auto px-4 sm:px-6 mt-6 flex-1 pb-12">
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-200/60 border border-slate-100 space-y-6">
+          
           {error && (
-            <div className="p-3 bg-red-50 text-red-600 rounded-xl text-xs font-semibold border border-red-100">
+            <div className="p-3.5 bg-red-50 text-red-600 rounded-xl text-xs font-semibold border border-red-100">
               {error}
             </div>
           )}
 
-          {/* Total Loan Amount / Remaining Balance */}
-          <div>
-            <label className="block text-[11px] font-black text-red-600 uppercase tracking-wider mb-1">
-              Total Loan Amount
-            </label>
-            <div className="relative">
-              <IndianRupee className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-red-500" />
-              <input
-                type="text"
-                readOnly
-                value={`₹${currentTotalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`}
-                className="w-full bg-red-50/30 border border-red-300 rounded-xl py-2.5 pl-10 pr-4 text-sm font-bold text-red-600 focus:outline-none"
-              />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Total Loan Amount / Remaining Balance Box */}
+            <div className="bg-red-50/50 border border-red-200 rounded-2xl p-4 sm:p-5 flex items-center justify-between">
+              <div>
+                <p className="text-[11px] font-black text-red-600 uppercase tracking-wider">
+                  TOTAL LOAN AMOUNT
+                </p>
+                <p className="text-xs font-medium text-slate-500 mt-0.5">
+                  Current remaining unpaid loan balance
+                </p>
+              </div>
+              <p className="text-xl sm:text-2xl font-black text-red-600 flex items-center gap-1">
+                ₹{currentTotalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+              </p>
             </div>
-          </div>
 
-          {/* Paid Amount (₹) with Floating Input */}
-          <FloatingInput
-            label="Paid Amount (₹)"
-            icon={IndianRupee}
-            type="number"
-            step="any"
-            value={paidAmount}
-            onChange={(e) => setPaidAmount(e.target.value)}
-            required
-            autoFocus
-          />
+            {/* Paid Amount (₹) with Floating Input */}
+            <FloatingInput
+              label="Paid Amount (₹)"
+              icon={IndianRupee}
+              type="number"
+              step="any"
+              value={paidAmount}
+              onChange={(e) => setPaidAmount(e.target.value)}
+              required
+              autoFocus
+            />
 
-          {/* Description with Floating Input */}
-          <FloatingInput
-            label="Description"
-            icon={FileText}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+            {/* Description with Floating Input */}
+            <FloatingInput
+              label="Description"
+              icon={FileText}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
 
-          {/* Action Buttons */}
-          <div className="flex items-center gap-3 pt-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-3 rounded-2xl transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 bg-[#0d9488] hover:bg-[#0f766e] text-white font-extrabold text-xs py-3 rounded-2xl shadow-md shadow-teal-700/20 flex items-center justify-center gap-1.5 transition-all active:scale-95 disabled:opacity-60"
-            >
-              <CheckCircle2 className="w-4 h-4" />
-              {loading ? 'Saving...' : 'Save & Deduct'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+            {/* Large Action Buttons */}
+            <div className="flex items-center gap-3.5 pt-4">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm py-3.5 sm:py-4 rounded-2xl transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex-1 bg-[#0d9488] hover:bg-[#0f766e] text-white font-extrabold text-sm py-3.5 sm:py-4 rounded-2xl shadow-lg shadow-teal-700/20 flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-60"
+              >
+                <CheckCircle2 className="w-5 h-5" />
+                {loading ? 'Saving...' : 'Save & Deduct'}
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </motion.div>
   );
 }
