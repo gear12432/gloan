@@ -122,10 +122,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const unsubscribeCustomers = onSnapshot(
       custQuery,
       (snapshot) => {
-        const custs: Customer[] = [];
+        const custsMap = new Map<string, Customer>();
         snapshot.forEach((doc) => {
-          custs.push({ id: doc.id, ...doc.data() } as Customer);
+          const data = { id: doc.id, ...doc.data() } as Customer;
+          // Deduplicate by customerId or doc id
+          const key = data.customerId || doc.id;
+          if (!custsMap.has(key)) {
+            custsMap.set(key, data);
+          }
         });
+        const custs = Array.from(custsMap.values());
         // Sort by createdAt desc
         custs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         setCustomers(custs);

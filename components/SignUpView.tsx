@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react';
 import { Building2, User, Phone, Mail, Lock, ShieldCheck, ArrowRight } from 'lucide-react';
+import { motion } from 'motion/react';
 import { useAuth } from '@/context/AuthContext';
+import FloatingInput from './ui/FloatingInput';
 
 interface SignUpViewProps {
   onNavigateSignIn: () => void;
@@ -47,8 +49,13 @@ export default function SignUpView({ onNavigateSignIn }: SignUpViewProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[#f3f6f9] flex flex-col items-center justify-center p-4 sm:p-6 my-6">
-      <div className="w-full max-w-md flex flex-col items-center">
+    <motion.div 
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="min-h-screen bg-[#f3f6f9] flex flex-col items-center justify-center p-4 sm:p-6 my-6"
+    >
+      <div className="w-full max-w-lg flex flex-col items-center">
         
         {/* Logo */}
         <div className="w-16 h-16 bg-[#0d9488] rounded-2xl flex items-center justify-center shadow-lg shadow-teal-700/20 mb-4">
@@ -73,112 +80,68 @@ export default function SignUpView({ onNavigateSignIn }: SignUpViewProps) {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* FULL NAME */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                FULL NAME *
-              </label>
-              <div className="relative">
-                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="e.g. Rahul Sharma"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0d9488]/40 focus:border-[#0d9488]"
-                />
-              </div>
-            </div>
+            <FloatingInput
+              label="Full Name"
+              icon={User}
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
 
             {/* BUSINESS NAME */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                BUSINESS NAME *
-              </label>
-              <div className="relative">
-                <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  value={businessName}
-                  onChange={(e) => setBusinessName(e.target.value)}
-                  placeholder="e.g. Apex Small Finance"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0d9488]/40 focus:border-[#0d9488]"
-                />
-              </div>
-            </div>
+            <FloatingInput
+              label="Business Name"
+              icon={Building2}
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              required
+            />
 
             {/* MOBILE NUMBER */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                MOBILE NUMBER *
-              </label>
-              <div className="relative">
-                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="tel"
-                  value={mobileNumber}
-                  onChange={(e) => setMobileNumber(e.target.value)}
-                  placeholder="e.g. +91 98765 43210"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0d9488]/40 focus:border-[#0d9488]"
-                />
-              </div>
-            </div>
+            <FloatingInput
+              label="Mobile Number"
+              icon={Phone}
+              type="tel"
+              value={mobileNumber}
+              onChange={(e) => setMobileNumber(e.target.value)}
+              required
+            />
 
             {/* EMAIL ADDRESS */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                EMAIL ADDRESS *
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="e.g. rahul@example.com"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0d9488]/40 focus:border-[#0d9488]"
-                />
-              </div>
-            </div>
+            <FloatingInput
+              label="Email Address"
+              icon={Mail}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
 
             {/* PASSWORD */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                PASSWORD *
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="At least 6 characters"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0d9488]/40 focus:border-[#0d9488]"
-                />
-              </div>
-            </div>
+            <FloatingInput
+              label="Password (At least 6 characters)"
+              icon={Lock}
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
 
             {/* CONFIRM PASSWORD */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                CONFIRM PASSWORD *
-              </label>
-              <div className="relative">
-                <ShieldCheck className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Re-enter password"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0d9488]/40 focus:border-[#0d9488]"
-                />
-              </div>
-            </div>
+            <FloatingInput
+              label="Confirm Password"
+              icon={ShieldCheck}
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
 
             {/* SUBMIT BUTTON */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white font-bold py-3.5 rounded-xl shadow-md shadow-teal-700/20 flex items-center justify-center gap-2 transition-all active:scale-[0.99] disabled:opacity-60 mt-2"
+              className="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white font-bold py-3.5 rounded-xl shadow-md shadow-teal-700/20 flex items-center justify-center gap-2 transition-all active:scale-[0.99] disabled:opacity-60 mt-2 text-sm sm:text-base"
             >
               {loading ? 'Creating Account...' : 'Create Account'}
               <ArrowRight className="w-5 h-5" />
@@ -186,7 +149,7 @@ export default function SignUpView({ onNavigateSignIn }: SignUpViewProps) {
           </form>
 
           {/* LINK TO SIGN IN */}
-          <div className="mt-6 text-center text-xs font-medium text-slate-500">
+          <div className="mt-6 text-center text-xs sm:text-sm font-medium text-slate-500">
             Already have a Business Account?{' '}
             <button
               type="button"
@@ -198,6 +161,6 @@ export default function SignUpView({ onNavigateSignIn }: SignUpViewProps) {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Calculator, X, CheckCircle2, IndianRupee, FileText } from 'lucide-react';
 import { Customer } from '@/types/finance';
 import { useAuth } from '@/context/AuthContext';
+import FloatingInput from './ui/FloatingInput';
 
 interface RecordPaymentModalProps {
   customer: Customer;
@@ -81,7 +82,7 @@ export default function RecordPaymentModal({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+        <form onSubmit={handleSubmit} className="mt-5 space-y-4 pt-1">
           {error && (
             <div className="p-3 bg-red-50 text-red-600 rounded-xl text-xs font-semibold border border-red-100">
               {error}
@@ -104,42 +105,25 @@ export default function RecordPaymentModal({
             </div>
           </div>
 
-          {/* Paid Amount (₹) */}
-          <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-              Paid Amount (₹) *
-            </label>
-            <div className="relative">
-              <IndianRupee className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#0d9488]" />
-              <input
-                type="number"
-                step="any"
-                value={paidAmount}
-                onChange={(e) => setPaidAmount(e.target.value)}
-                placeholder="Paid Amount (₹) *"
-                className="w-full bg-slate-50 border border-[#0d9488]/40 rounded-xl py-2.5 pl-10 pr-4 text-sm font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0d9488]/40"
-                required
-                autoFocus
-              />
-            </div>
-          </div>
+          {/* Paid Amount (₹) with Floating Input */}
+          <FloatingInput
+            label="Paid Amount (₹)"
+            icon={IndianRupee}
+            type="number"
+            step="any"
+            value={paidAmount}
+            onChange={(e) => setPaidAmount(e.target.value)}
+            required
+            autoFocus
+          />
 
-          {/* Description */}
-          <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-              Description
-            </label>
-            <div className="relative">
-              <FileText className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input
-                type="text"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Description"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0d9488]/40"
-              />
-            </div>
-          </div>
+          {/* Description with Floating Input */}
+          <FloatingInput
+            label="Description"
+            icon={FileText}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
 
           {/* Action Buttons */}
           <div className="flex items-center gap-3 pt-3">

@@ -23,8 +23,8 @@ export default function Header({
   const fullName = userProfile?.fullName || 'Gear';
 
   return (
-    <header className="bg-[#0d9488] text-white pt-5 pb-6 px-4 rounded-b-[2.5rem] shadow-lg shadow-teal-900/10 transition-all">
-      <div className="max-w-md mx-auto">
+    <header className="bg-[#0d9488] text-white pt-5 pb-6 px-4 sm:px-6 rounded-b-[2.5rem] shadow-lg shadow-teal-900/10 transition-all">
+      <div className="max-w-3xl mx-auto">
         {/* Top User Bar */}
         <div className="flex items-center justify-between mb-4">
           {/* User Profile Info */}
@@ -52,7 +52,7 @@ export default function Header({
           <div className="flex items-center gap-2">
             <button
               onClick={onOpenNotifications}
-              className="relative p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              className="relative p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
               title="Notifications"
             >
               <Bell className="w-5 h-5 text-white" />
@@ -62,7 +62,7 @@ export default function Header({
             </button>
             <button
               onClick={signOutUser}
-              className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white transition-colors"
+              className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white transition-colors"
               title="Sign Out"
             >
               <LogOut className="w-4 h-4" />
@@ -72,13 +72,13 @@ export default function Header({
 
         {/* Search Input Bar */}
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by ID, name or mobile number"
-            className="w-full bg-white rounded-full py-2.5 pl-11 pr-4 text-xs sm:text-sm font-medium text-slate-800 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-white/50"
+            className="w-full bg-white rounded-full py-3 pl-11 pr-4 text-xs sm:text-sm font-semibold text-slate-800 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-white/50"
           />
         </div>
       </div>

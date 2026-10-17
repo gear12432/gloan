@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   ArrowLeft, 
   RotateCw, 
@@ -13,8 +13,10 @@ import {
   Camera, 
   CheckCircle2 
 } from 'lucide-react';
+import { motion } from 'motion/react';
 import { Customer, RepaymentFrequency, CustomerStatus } from '@/types/finance';
 import { useAuth } from '@/context/AuthContext';
+import FloatingInput from './ui/FloatingInput';
 
 interface AddEditCustomerViewProps {
   existingCustomer?: Customer | null;
@@ -120,147 +122,101 @@ export default function AddEditCustomerView({
   };
 
   return (
-    <div className="min-h-screen bg-[#f3f6f9] pb-12">
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25 }}
+      className="min-h-screen bg-[#f3f6f9] pb-12"
+    >
       {/* Top Header */}
-      <div className="bg-[#0d9488] text-white py-5 px-4 rounded-b-[2rem] shadow-md flex items-center justify-between">
+      <div className="bg-[#0d9488] text-white py-5 px-4 sm:px-6 rounded-b-[2rem] shadow-md flex items-center justify-between">
         <button
           onClick={onBack}
           className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <h1 className="text-lg font-extrabold uppercase tracking-wide">
+        <h1 className="text-base sm:text-lg font-extrabold uppercase tracking-wide">
           {existingCustomer ? 'Edit Customer' : 'Add New Customer'}
         </h1>
         <div className="w-10" />
       </div>
 
-      {/* Main Form Container */}
-      <main className="max-w-md mx-auto px-4 mt-5">
-        <div className="bg-white rounded-3xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100">
+      {/* Main Form Container - Expanded Full Responsive Width */}
+      <main className="max-w-2xl mx-auto px-4 sm:px-6 mt-5">
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-200/50 border border-slate-100">
           {error && (
-            <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-xl text-xs font-semibold border border-red-100">
+            <div className="mb-4 p-3.5 bg-red-50 text-red-600 rounded-xl text-xs font-semibold border border-red-100">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSave} className="space-y-4">
-            {/* Customer ID */}
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  Customer ID *
-                </label>
+          <form onSubmit={handleSave} className="space-y-5">
+            {/* Customer ID with Regenerate Button */}
+            <div className="relative">
+              <div className="absolute right-3 top-3.5 z-20">
                 <button
                   type="button"
                   onClick={() => setCustomerId(generateNewId())}
-                  className="text-xs font-bold text-[#0d9488] hover:underline flex items-center gap-1"
+                  className="text-xs font-bold text-[#0d9488] hover:underline flex items-center gap-1 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-100"
                 >
                   <RotateCw className="w-3.5 h-3.5" />
-                  Regenerate ID
+                  Regenerate
                 </button>
               </div>
-              <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">
-                  #
-                </span>
-                <input
-                  type="text"
-                  value={customerId}
-                  onChange={(e) => setCustomerId(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-8 pr-4 text-sm font-bold text-[#0d9488] focus:outline-none focus:ring-2 focus:ring-[#0d9488]/40"
-                  required
-                />
-              </div>
+              <FloatingInput
+                label="Customer ID"
+                value={customerId}
+                onChange={(e) => setCustomerId(e.target.value)}
+                required
+              />
             </div>
 
             {/* Customer Name */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Customer Name *
-              </label>
-              <div className="relative">
-                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  placeholder="e.g. Rahul Sharma"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0d9488]/40"
-                  required
-                />
-              </div>
-            </div>
+            <FloatingInput
+              label="Customer Name"
+              icon={User}
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+              required
+            />
 
             {/* Customer Mobile Number */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Customer Mobile Number *
-              </label>
-              <div className="relative">
-                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="tel"
-                  value={mobileNumber}
-                  onChange={(e) => setMobileNumber(e.target.value)}
-                  placeholder="Customer Mobile Number *"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0d9488]/40"
-                  required
-                />
-              </div>
-            </div>
+            <FloatingInput
+              label="Customer Mobile Number"
+              icon={Phone}
+              type="tel"
+              value={mobileNumber}
+              onChange={(e) => setMobileNumber(e.target.value)}
+              required
+            />
 
             {/* Customer Address */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Customer Address
-              </label>
-              <div className="relative">
-                <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Customer Address"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0d9488]/40"
-                />
-              </div>
-            </div>
+            <FloatingInput
+              label="Customer Address"
+              icon={MapPin}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
 
             {/* Loan Amount */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Loan Amount (₹) *
-              </label>
-              <div className="relative">
-                <IndianRupee className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="number"
-                  value={loanAmount}
-                  onChange={(e) => setLoanAmount(e.target.value)}
-                  placeholder="Loan Amount (₹) *"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0d9488]/40"
-                  required
-                />
-              </div>
-            </div>
+            <FloatingInput
+              label="Loan Amount (₹)"
+              icon={IndianRupee}
+              type="number"
+              value={loanAmount}
+              onChange={(e) => setLoanAmount(e.target.value)}
+              required
+            />
 
             {/* Total Interest Rate Amount */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Total Interest Rate Amount (₹)
-              </label>
-              <div className="relative">
-                <Percent className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="number"
-                  value={interestAmount}
-                  onChange={(e) => setInterestAmount(e.target.value)}
-                  placeholder="e.g. 500"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0d9488]/40"
-                />
-              </div>
-            </div>
+            <FloatingInput
+              label="Total Interest Rate Amount (₹)"
+              icon={Percent}
+              type="number"
+              value={interestAmount}
+              onChange={(e) => setInterestAmount(e.target.value)}
+            />
 
             {/* SUB TOTAL LOAN AMOUNT (Green Auto-Calculated Box) */}
             <div className="bg-teal-50/70 border border-teal-200/80 rounded-2xl p-4 flex items-center justify-between">
@@ -283,8 +239,8 @@ export default function AddEditCustomerView({
             </div>
 
             {/* PROFILE PICTURE */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+            <div className="space-y-1.5 pt-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
                 PROFILE PICTURE
               </label>
               <div className="flex items-center gap-3">
@@ -310,19 +266,19 @@ export default function AddEditCustomerView({
             </div>
 
             {/* REPAYMENT FREQUENCY */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+            <div className="space-y-1.5 pt-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
                 REPAYMENT FREQUENCY *
               </label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-2.5">
                 {(['Per Day', 'Per Week', 'Per Month'] as RepaymentFrequency[]).map((freq) => (
                   <button
                     key={freq}
                     type="button"
                     onClick={() => setRepaymentFrequency(freq)}
-                    className={`py-2.5 text-xs font-bold rounded-xl border transition-all ${
+                    className={`py-3 text-xs sm:text-sm font-bold rounded-xl border transition-all ${
                       repaymentFrequency === freq
-                        ? 'bg-teal-50 text-[#0d9488] border-[#0d9488] ring-2 ring-[#0d9488]/20'
+                        ? 'bg-teal-50 text-[#0d9488] border-[#0d9488] ring-2 ring-[#0d9488]/20 shadow-2xs'
                         : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
                     }`}
                   >
@@ -333,14 +289,14 @@ export default function AddEditCustomerView({
             </div>
 
             {/* STATUS */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+            <div className="space-y-1.5 pt-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
                 STATUS
               </label>
               <button
                 type="button"
                 onClick={() => setStatus(status === 'PENDING' ? 'SUCCESSFUL' : 'PENDING')}
-                className={`w-full py-3 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all ${
+                className={`w-full py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${
                   status === 'PENDING'
                     ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20'
                     : 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
@@ -355,7 +311,7 @@ export default function AddEditCustomerView({
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white font-extrabold py-3.5 rounded-2xl shadow-lg shadow-teal-700/20 flex items-center justify-center gap-2 transition-all active:scale-[0.99] disabled:opacity-60 mt-4"
+              className="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white font-extrabold py-3.5 sm:py-4 rounded-2xl shadow-lg shadow-teal-700/20 flex items-center justify-center gap-2 transition-all active:scale-[0.99] disabled:opacity-60 text-sm sm:text-base mt-4"
             >
               <CheckCircle2 className="w-5 h-5" />
               {loading ? 'Saving Customer...' : 'Save Customer'}
@@ -363,6 +319,6 @@ export default function AddEditCustomerView({
           </form>
         </div>
       </main>
-    </div>
+    </motion.div>
   );
 }

@@ -25,7 +25,13 @@ function MainApp() {
 
   // Auto seed demo customers if new account with 0 customers
   useEffect(() => {
-    if (user && customers.length === 0 && !loading) {
+    if (!user || loading) return;
+
+    const seedKey = `sf_seeded_${user.uid}`;
+    if (localStorage.getItem(seedKey)) return;
+
+    if (customers.length === 0) {
+      localStorage.setItem(seedKey, 'true');
       const seedData = async () => {
         try {
           const cust1Id = await addCustomer({
@@ -41,7 +47,7 @@ function MainApp() {
             profilePicture: '',
           });
 
-          const cust2Id = await addCustomer({
+          await addCustomer({
             customerId: 'FG43396',
             customerName: 'Aaaaa',
             mobileNumber: '9999999999',
@@ -80,6 +86,8 @@ function MainApp() {
         }
       };
       seedData();
+    } else {
+      localStorage.setItem(seedKey, 'true');
     }
   }, [user, customers.length, loading, addCustomer, recordPayment]);
 
