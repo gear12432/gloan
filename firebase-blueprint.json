@@ -1,0 +1,82 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Business account user for Small Finance",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "fullName": { "type": "string" },
+        "businessName": { "type": "string" },
+        "mobileNumber": { "type": "string" },
+        "email": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "fullName", "businessName", "email"]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "Borrower customer record in Small Finance",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customerId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "mobileNumber": { "type": "string" },
+        "address": { "type": "string" },
+        "loanAmount": { "type": "number" },
+        "interestAmount": { "type": "number" },
+        "subTotalLoanAmount": { "type": "number" },
+        "totalPaid": { "type": "number" },
+        "remainingAmount": { "type": "number" },
+        "profilePicture": { "type": "string" },
+        "repaymentFrequency": {
+          "type": "string",
+          "enum": ["Per Day", "Per Week", "Per Month"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["PENDING", "SUCCESSFUL"]
+        },
+        "userId": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["customerId", "customerName", "mobileNumber", "loanAmount", "subTotalLoanAmount", "repaymentFrequency", "status", "userId"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Ledger payment transaction for a customer",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customerId": { "type": "string" },
+        "customerDocId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "invoiceId": { "type": "string" },
+        "amount": { "type": "number" },
+        "type": { "type": "string", "enum": ["Payment", "Charge"] },
+        "description": { "type": "string" },
+        "date": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "userId": { "type": "string" },
+        "status": { "type": "string", "enum": ["SUCCESSFUL", "PENDING"] }
+      },
+      "required": ["customerId", "customerDocId", "amount", "type", "userId", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User business profiles"
+    },
+    "/customers/{customerId}": {
+      "schema": { "$ref": "#/entities/Customer" },
+      "description": "Customer borrower records"
+    },
+    "/transactions/{transactionId}": {
+      "schema": { "$ref": "#/entities/Transaction" },
+      "description": "Ledger entries for payments and charges"
+    }
+  }
+}

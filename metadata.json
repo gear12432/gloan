@@ -1,0 +1,6 @@
+{
+  "name": "Small Finance",
+  "description": "Real-Time Customer Management Console for managing loan records, payments, and financial ledger statements.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
