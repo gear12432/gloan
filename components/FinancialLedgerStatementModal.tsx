@@ -2,7 +2,6 @@
 
 import React, { useRef, useState } from 'react';
 import { Printer, Download, X } from 'lucide-react';
-import html2canvas from 'html2canvas';
 import { Customer, Transaction, UserProfile } from '@/types/finance';
 
 interface FinancialLedgerStatementModalProps {
@@ -46,14 +45,15 @@ export default function FinancialLedgerStatementModal({
     if (!printRef.current) return;
     setDownloading(true);
     try {
-      const canvas = await html2canvas(printRef.current, {
-        scale: 2,
-        useCORS: true,
+      const { toJpeg } = await import('html-to-image');
+      const dataUrl = await toJpeg(printRef.current, {
+        quality: 0.95,
         backgroundColor: '#ffffff',
+        pixelRatio: 2,
+        cacheBust: true,
       });
-      const image = canvas.toDataURL('image/jpeg', 0.95);
       const link = document.createElement('a');
-      link.href = image;
+      link.href = dataUrl;
       link.download = `Invoice_${customer.customerId}_${invoiceId}.jpg`;
       link.click();
     } catch (err) {
