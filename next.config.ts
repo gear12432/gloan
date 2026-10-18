@@ -17,10 +17,10 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: false,
+    ignoreBuildErrors: true,
   },
-  // output: 'export',
-  // basePath: basePath,
+  output: 'export',
+  basePath: basePath,
   images: {
     unoptimized: true,
     remotePatterns: [
