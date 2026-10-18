@@ -148,6 +148,30 @@ export default function ProfileView({ onBack }: ProfileViewProps) {
           </div>
         </div>
 
+        {/* Call Details Quick Action Bar */}
+        <div className="bg-[#0d9488]/10 border border-[#0d9488]/20 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-2xs">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#0d9488] text-white flex items-center justify-center flex-shrink-0 shadow-xs">
+              <Phone className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-[10px] font-black text-[#0d9488] uppercase tracking-wider">
+                CALL / CONTACT DETAILS
+              </p>
+              <p className="text-sm sm:text-base font-extrabold text-slate-900 mt-0.5">
+                {mobileNumber || 'Not specified'}
+              </p>
+            </div>
+          </div>
+          <a
+            href={`tel:${mobileNumber}`}
+            className="bg-[#0d9488] hover:bg-[#0f766e] text-white text-xs sm:text-sm font-extrabold py-2.5 px-4 rounded-xl shadow-xs flex items-center gap-1.5 transition-all active:scale-95 flex-shrink-0"
+          >
+            <Phone className="w-4 h-4" />
+            Call Now
+          </a>
+        </div>
+
         {/* Form Fields Card */}
         <div className="bg-white rounded-3xl p-5 sm:p-7 shadow-xl shadow-slate-200/50 border border-slate-100 space-y-6">
           

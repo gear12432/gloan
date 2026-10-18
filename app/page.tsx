@@ -11,14 +11,40 @@ import TransactionLedgerView from '@/components/TransactionLedgerView';
 import NotificationModal from '@/components/NotificationModal';
 import ProfileView from '@/components/ProfileView';
 import ProfileModal from '@/components/ProfileModal';
+import SettingsView from '@/components/SettingsView';
+import BusinessSettingsView from '@/components/BusinessSettingsView';
+import PrivacyPolicyView from '@/components/PrivacyPolicyView';
+import TermsConditionsView from '@/components/TermsConditionsView';
 import { Customer, ActiveScreen } from '@/types/finance';
 
 function MainApp() {
-  const { user, loading, customers, transactions, addCustomer, recordPayment } = useAuth();
+  const { user, userProfile, loading, customers, transactions, addCustomer, recordPayment, updateProfile } = useAuth();
 
   const [authMode, setAuthMode] = useState<'SIGN_IN' | 'SIGN_UP'>('SIGN_IN');
   const [activeScreen, setActiveScreen] = useState<ActiveScreen>('DASHBOARD');
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+
+  // Theme State
+  const activeTheme = userProfile?.theme || 'light';
+  const [theme, setTheme] = useState<'light' | 'dark'>(activeTheme);
+
+  useEffect(() => {
+    const currentMode = userProfile?.theme || theme;
+    if (currentMode === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme, userProfile?.theme]);
+
+  const handleToggleTheme = async (mode: 'light' | 'dark') => {
+    setTheme(mode);
+    try {
+      await updateProfile({ theme: mode });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // Modals
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -139,12 +165,43 @@ function MainApp() {
           }}
           onOpenNotifications={() => setIsNotificationOpen(true)}
           onOpenProfileModal={() => setActiveScreen('PROFILE')}
+          onOpenSettings={() => setActiveScreen('SETTINGS')}
         />
       )}
 
       {activeScreen === 'PROFILE' && (
         <ProfileView
           onBack={() => setActiveScreen('DASHBOARD')}
+        />
+      )}
+
+      {activeScreen === 'SETTINGS' && (
+        <SettingsView
+          onBack={() => setActiveScreen('DASHBOARD')}
+          onNavigateProfile={() => setActiveScreen('PROFILE')}
+          onNavigateBusinessSettings={() => setActiveScreen('BUSINESS_SETTINGS')}
+          onNavigatePrivacy={() => setActiveScreen('PRIVACY_POLICY')}
+          onNavigateTerms={() => setActiveScreen('TERMS_CONDITIONS')}
+          currentTheme={theme}
+          onToggleTheme={handleToggleTheme}
+        />
+      )}
+
+      {activeScreen === 'BUSINESS_SETTINGS' && (
+        <BusinessSettingsView
+          onBack={() => setActiveScreen('SETTINGS')}
+        />
+      )}
+
+      {activeScreen === 'PRIVACY_POLICY' && (
+        <PrivacyPolicyView
+          onBack={() => setActiveScreen('SETTINGS')}
+        />
+      )}
+
+      {activeScreen === 'TERMS_CONDITIONS' && (
+        <TermsConditionsView
+          onBack={() => setActiveScreen('SETTINGS')}
         />
       )}
 

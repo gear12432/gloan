@@ -12,6 +12,7 @@ interface DashboardViewProps {
   onSelectCustomer: (customer: Customer) => void;
   onOpenNotifications: () => void;
   onOpenProfileModal: () => void;
+  onOpenSettings: () => void;
 }
 
 type FilterType = 'PENDING' | 'SUCCESSFUL' | 'ALL';
@@ -22,6 +23,7 @@ export default function DashboardView({
   onSelectCustomer,
   onOpenNotifications,
   onOpenProfileModal,
+  onOpenSettings,
 }: DashboardViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterType>('PENDING');
@@ -51,7 +53,8 @@ export default function DashboardView({
       const matchName = c.customerName.toLowerCase().includes(q);
       const matchId = c.customerId.toLowerCase().includes(q);
       const matchPhone = c.mobileNumber.toLowerCase().includes(q);
-      return matchName || matchId || matchPhone;
+      const matchAddress = c.address ? c.address.toLowerCase().includes(q) : false;
+      return matchName || matchId || matchPhone || matchAddress;
     }
     return true;
   });
@@ -69,6 +72,7 @@ export default function DashboardView({
         setSearchQuery={setSearchQuery}
         onOpenNotifications={onOpenNotifications}
         onOpenProfileModal={onOpenProfileModal}
+        onOpenSettings={onOpenSettings}
       />
 
       {/* Main Content Area - Full width responsive container */}

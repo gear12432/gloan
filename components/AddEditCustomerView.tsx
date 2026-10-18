@@ -29,7 +29,8 @@ export default function AddEditCustomerView({
   onBack,
   onSaved,
 }: AddEditCustomerViewProps) {
-  const { addCustomer, updateCustomer } = useAuth();
+  const { addCustomer, updateCustomer, userProfile } = useAuth();
+  const defaultRate = userProfile?.defaultInterestRate || 0;
 
   const generateNewId = () => {
     const num = Math.floor(10000 + Math.random() * 90000);
@@ -52,6 +53,15 @@ export default function AddEditCustomerView({
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const handleLoanAmountChange = (val: string) => {
+    setLoanAmount(val);
+    const num = parseFloat(val);
+    if (!isNaN(num) && num > 0 && defaultRate > 0) {
+      const calcInterest = (num * defaultRate) / 100;
+      setInterestAmount(String(calcInterest));
+    }
+  };
 
   // Auto-calculated Subtotal = Loan + Interest
   const numLoan = parseFloat(loanAmount) || 0;
@@ -206,7 +216,7 @@ export default function AddEditCustomerView({
               icon={IndianRupee}
               type="number"
               value={loanAmount}
-              onChange={(e) => setLoanAmount(e.target.value)}
+              onChange={(e) => handleLoanAmountChange(e.target.value)}
               required
             />
 

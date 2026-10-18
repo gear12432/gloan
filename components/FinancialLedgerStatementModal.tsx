@@ -122,10 +122,16 @@ export default function FinancialLedgerStatementModal({
           <div className="bg-[#037244] text-white p-3.5 sm:p-5 rounded-t-lg flex items-center justify-between flex-nowrap gap-2 sm:gap-4">
             {/* Left Logo & INVOICE Title */}
             <div className="flex items-center gap-2 sm:gap-4">
-              <div className="flex flex-col items-center justify-center border-2 border-white/80 p-1 px-2 rounded">
-                <span className="text-[8px] sm:text-[10px] font-black tracking-widest uppercase leading-none">COMPANY</span>
-                <span className="text-sm sm:text-lg font-black tracking-tighter uppercase leading-tight">LOGO</span>
-              </div>
+              {userProfile?.profileImageUrl ? (
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded bg-white overflow-hidden flex items-center justify-center p-0.5 border border-white/80">
+                  <img src={userProfile.profileImageUrl} alt="Logo" className="w-full h-full object-cover" />
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center border-2 border-white/80 p-1 px-2 rounded">
+                  <span className="text-[8px] sm:text-[10px] font-black tracking-widest uppercase leading-none">COMPANY</span>
+                  <span className="text-sm sm:text-lg font-black tracking-tighter uppercase leading-tight">LOGO</span>
+                </div>
+              )}
               <div className="h-8 sm:h-10 w-0.5 bg-white/40" />
               <h1 className="text-lg sm:text-3xl font-black tracking-wider uppercase">
                 INVOICE
@@ -154,16 +160,16 @@ export default function FinancialLedgerStatementModal({
             {/* Left: YOUR COMPANY NAME */}
             <div className="space-y-0.5 text-slate-800">
               <h2 className="font-black text-xs sm:text-sm text-slate-900 uppercase tracking-wide truncate">
-                {userProfile?.businessName || 'YOUR COMPANY NAME'}
+                {userProfile?.businessName || 'KH LOAN'}
               </h2>
               <p className="font-medium text-slate-700 truncate">
-                <span className="font-bold text-slate-900">Address:</span> {userProfile?.fullName || 'Main City'}
+                <span className="font-bold text-slate-900">Address:</span> {userProfile?.businessAddress || 'Main Road, Market Complex'}
               </p>
               <p className="font-medium text-slate-700 truncate">
                 <span className="font-bold text-slate-900">Phone:</span> {userProfile?.mobileNumber || '+91 98765 43210'}
               </p>
               <p className="font-medium text-slate-700 truncate">
-                <span className="font-bold text-slate-900">Email:</span> {userProfile?.email || 'business@smallfinance.com'}
+                <span className="font-bold text-slate-900">Email:</span> {userProfile?.businessEmail || userProfile?.email || 'contact@khloan.com'}
               </p>
             </div>
 
