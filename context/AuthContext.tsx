@@ -238,6 +238,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loanAmount: Number(data.loanAmount),
         interestAmount: Number(data.interestAmount || 0),
         subTotalLoanAmount: subTotal,
+        installmentAmount: data.installmentAmount !== undefined ? Number(data.installmentAmount) : subTotal,
         totalPaid: 0,
         remainingAmount: subTotal,
         userId: user.uid,

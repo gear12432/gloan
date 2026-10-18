@@ -21,7 +21,12 @@ export default function RecordPaymentModal({
   onSuccess,
 }: RecordPaymentModalProps) {
   const { recordPayment } = useAuth();
-  const [paidAmount, setPaidAmount] = useState<string>('');
+  // Automatically pre-fill paid amount with customer's installment amount (or remaining amount)
+  const [paidAmount, setPaidAmount] = useState<string>(
+    customer.installmentAmount 
+      ? String(customer.installmentAmount) 
+      : (customer.remainingAmount ? String(customer.remainingAmount) : '')
+  );
   const [description, setDescription] = useState<string>('Payment received');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -113,7 +118,7 @@ export default function RecordPaymentModal({
                 </p>
               </div>
 
-              {/* Paid Amount (₹) with Bolder Floating Input */}
+              {/* Paid Amount (₹) with Bolder Floating Input & Auto-detected installment amount */}
               <FloatingInput
                 label="Paid Amount (₹)"
                 icon={IndianRupee}
@@ -124,6 +129,13 @@ export default function RecordPaymentModal({
                 required
                 autoFocus
               />
+
+              {customer.installmentAmount && (
+                <div className="text-xs font-bold text-teal-700 bg-teal-50 px-4 py-2.5 rounded-xl border border-teal-200 flex items-center justify-between">
+                  <span>Auto-detected per installment amount:</span>
+                  <span className="font-black">₹{customer.installmentAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                </div>
+              )}
 
               {/* Description with Bolder Floating Input */}
               <FloatingInput

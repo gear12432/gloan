@@ -32,14 +32,14 @@ export default function FloatingInput({
   return (
     <div className="w-full space-y-1">
       <div className="relative w-full">
-        {/* Left Icon if provided */}
+        {/* Left Icon if provided - Black color as requested */}
         {Icon && (
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10">
-            <Icon className={`w-5 h-5 transition-colors ${isFocused ? 'text-[#0d9488]' : 'text-slate-400'}`} />
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-900 pointer-events-none z-10">
+            <Icon className="w-5 h-5 text-slate-900" />
           </div>
         )}
 
-        {/* Input Element with Bold & Larger Font */}
+        {/* Input Element with Black Text, Bolder & Larger Font */}
         <input
           {...props}
           type={type}
@@ -54,7 +54,7 @@ export default function FloatingInput({
             if (onBlur) onBlur(e);
           }}
           placeholder=" "
-          className={`w-full bg-white border-2 rounded-2xl py-3.5 text-base sm:text-lg font-extrabold text-slate-900 transition-all duration-200 outline-none ${
+          className={`w-full bg-white border-2 rounded-2xl py-3.5 text-base sm:text-lg font-black text-slate-900 transition-all duration-200 outline-none ${
             Icon ? 'pl-11 pr-4' : 'px-4'
           } ${
             readOnlyText ? 'bg-slate-50 border-slate-200' : ''
@@ -74,7 +74,7 @@ export default function FloatingInput({
           } ${
             isFloating
               ? '-top-3 text-xs sm:text-xs bg-white text-[#0d9488] font-black tracking-wide shadow-2xs'
-              : 'top-1/2 -translate-y-1/2 text-sm sm:text-base text-slate-400 font-semibold'
+              : 'top-1/2 -translate-y-1/2 text-sm sm:text-base text-slate-500 font-bold'
           } ${error ? 'text-red-500' : ''}`}
         >
           {label} {required && <span className="text-red-500">*</span>}

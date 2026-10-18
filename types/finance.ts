@@ -15,6 +15,7 @@ export interface Customer {
   profilePicture?: string;
   repaymentFrequency: RepaymentFrequency;
   loanTenure?: string;
+  installmentAmount?: number;
   status: CustomerStatus;
   userId: string;
   createdAt: string;

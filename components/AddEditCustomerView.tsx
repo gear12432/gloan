@@ -53,22 +53,65 @@ export default function AddEditCustomerView({
   );
   const [profilePicture, setProfilePicture] = useState<string>(existingCustomer?.profilePicture || '');
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  // Calculate installment amount helper
+  const calculateInstallment = (sub: number, tenure: string, freq: RepaymentFrequency) => {
+    if (sub <= 0) return '';
+    const match = tenure.match(/(\d+)/);
+    const num = match ? parseInt(match[1], 10) : 1;
+    let totalInst = 1;
+    if (tenure.toLowerCase().includes('month')) {
+      if (freq === 'Per Day') totalInst = num * 30;
+      else if (freq === 'Per Week') totalInst = num * 4;
+      else totalInst = num;
+    } else if (tenure.toLowerCase().includes('week')) {
+      if (freq === 'Per Day') totalInst = num * 7;
+      else totalInst = num;
+    } else {
+      totalInst = num;
+    }
+    if (totalInst < 1) totalInst = 1;
+    return (sub / totalInst).toFixed(2);
+  };
+
+  const numLoan = parseFloat(loanAmount) || 0;
+  const numInterest = parseFloat(interestAmount) || 0;
+  const subTotal = numLoan + numInterest;
+
+  const initialInst = existingCustomer?.installmentAmount 
+    ? String(existingCustomer.installmentAmount) 
+    : calculateInstallment(subTotal, loanTenure, repaymentFrequency);
+
+  const [installmentAmount, setInstallmentAmount] = useState<string>(initialInst);
 
   const handleLoanAmountChange = (val: string) => {
     setLoanAmount(val);
     const num = parseFloat(val);
+    let newInterest = numInterest;
     if (!isNaN(num) && num > 0 && defaultRate > 0) {
       const calcInterest = (num * defaultRate) / 100;
+      newInterest = calcInterest;
       setInterestAmount(String(calcInterest));
     }
+    const newSub = num + newInterest;
+    setInstallmentAmount(calculateInstallment(newSub, loanTenure, repaymentFrequency));
   };
 
-  // Auto-calculated Subtotal = Loan + Interest
-  const numLoan = parseFloat(loanAmount) || 0;
-  const numInterest = parseFloat(interestAmount) || 0;
-  const subTotal = numLoan + numInterest;
+  const handleInterestChange = (val: string) => {
+    setInterestAmount(val);
+    const iNum = parseFloat(val) || 0;
+    const newSub = numLoan + iNum;
+    setInstallmentAmount(calculateInstallment(newSub, loanTenure, repaymentFrequency));
+  };
+
+  const handleTenureChange = (tenure: string) => {
+    setLoanTenure(tenure);
+    setInstallmentAmount(calculateInstallment(subTotal, tenure, repaymentFrequency));
+  };
+
+  const handleFrequencyChange = (freq: RepaymentFrequency) => {
+    setRepaymentFrequency(freq);
+    setInstallmentAmount(calculateInstallment(subTotal, loanTenure, freq));
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -85,6 +128,9 @@ export default function AddEditCustomerView({
     }
   };
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!customerName.trim() || !mobileNumber.trim() || numLoan <= 0) {
@@ -94,6 +140,8 @@ export default function AddEditCustomerView({
 
     setError('');
     setLoading(true);
+
+    const finalInstallment = parseFloat(installmentAmount) || subTotal;
 
     try {
       if (existingCustomer) {
@@ -105,6 +153,7 @@ export default function AddEditCustomerView({
           loanAmount: numLoan,
           interestAmount: numInterest,
           subTotalLoanAmount: subTotal,
+          installmentAmount: finalInstallment,
           remainingAmount: Math.max(0, subTotal - (existingCustomer.totalPaid || 0)),
           profilePicture,
           repaymentFrequency,
@@ -120,6 +169,7 @@ export default function AddEditCustomerView({
           loanAmount: numLoan,
           interestAmount: numInterest,
           subTotalLoanAmount: subTotal,
+          installmentAmount: finalInstallment,
           profilePicture,
           repaymentFrequency,
           loanTenure,
@@ -135,7 +185,6 @@ export default function AddEditCustomerView({
     }
   };
 
-  // Generate 1 Month to 12 Months (1 Year) tenure options
   const tenureOptions = [
     '1 Month',
     '2 Months',
@@ -239,8 +288,49 @@ export default function AddEditCustomerView({
               icon={Percent}
               type="number"
               value={interestAmount}
-              onChange={(e) => setInterestAmount(e.target.value)}
+              onChange={(e) => handleInterestChange(e.target.value)}
             />
+
+            {/* Repayment Frequency Selector */}
+            <div className="space-y-2">
+              <label className="block text-xs font-black text-slate-700 uppercase tracking-wider">
+                Repayment Frequency
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {(['Per Day', 'Per Week', 'Per Month'] as RepaymentFrequency[]).map((freq) => (
+                  <button
+                    key={freq}
+                    type="button"
+                    onClick={() => handleFrequencyChange(freq)}
+                    className={`py-3 rounded-2xl text-xs sm:text-sm font-black transition-all border-2 cursor-pointer ${
+                      repaymentFrequency === freq
+                        ? 'bg-[#0d9488] text-white border-[#0d9488] shadow-md shadow-teal-700/20'
+                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    {freq}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Loan Tenure Selector */}
+            <div className="space-y-2">
+              <label className="block text-xs font-black text-slate-700 uppercase tracking-wider">
+                Loan Tenure / Duration
+              </label>
+              <select
+                value={loanTenure}
+                onChange={(e) => handleTenureChange(e.target.value)}
+                className="w-full bg-white border-2 border-slate-200 rounded-2xl px-4 py-3.5 text-base sm:text-lg font-black text-slate-900 outline-none focus:border-[#0d9488] transition-all cursor-pointer"
+              >
+                {tenureOptions.map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             {/* SUB TOTAL LOAN AMOUNT (Green Auto-Calculated Box) */}
             <div className="bg-teal-50/70 border-2 border-teal-200/80 rounded-2xl p-4 sm:p-5 flex items-center justify-between">
@@ -262,13 +352,27 @@ export default function AddEditCustomerView({
               </p>
             </div>
 
+            {/* Per Installment Amount (₹) - Auto calculated & Editable */}
+            <FloatingInput
+              label="Installment Amount per Payment (₹) *"
+              icon={IndianRupee}
+              type="number"
+              step="any"
+              value={installmentAmount}
+              onChange={(e) => setInstallmentAmount(e.target.value)}
+              required
+            />
+            <p className="text-xs font-semibold text-slate-500 pl-1">
+              * Automatically calculated based on Total Subtotal amount divided by tenure periods ({repaymentFrequency}). You can adjust this if needed.
+            </p>
+
             {/* PROFILE PICTURE */}
             <div className="space-y-2 pt-1">
               <label className="block text-xs font-black text-slate-700 uppercase tracking-wider">
                 PROFILE PICTURE
               </label>
               <div className="flex items-center gap-3">
-                <label className="cursor-pointer inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs sm:text-sm px-4 py-3 rounded-xl border border-slate-200 transition-colors">
+                <label className="cursor-pointer inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs sm:text-sm px-4 py-3 rounded-2xl border border-slate-200 transition-colors">
                   <Camera className="w-4 h-4 text-[#0d9488]" />
                   Choose File
                   <input
@@ -278,72 +382,28 @@ export default function AddEditCustomerView({
                     className="hidden"
                   />
                 </label>
-                <span className="text-xs sm:text-sm text-slate-500 font-semibold">
-                  {profilePicture ? 'Image selected' : 'No file chosen'}
+                <span className="text-xs font-bold text-slate-600 truncate">
+                  {profilePicture ? 'Image Uploaded successfully' : 'No file chosen'}
                 </span>
-                {profilePicture && (
-                  <div className="w-11 h-11 rounded-full border-2 border-teal-300 overflow-hidden ml-auto">
-                    <img src={profilePicture} alt="Preview" className="w-full h-full object-cover" />
-                  </div>
-                )}
               </div>
-            </div>
-
-            {/* REPAYMENT FREQUENCY */}
-            <div className="space-y-2 pt-1">
-              <label className="block text-xs font-black text-slate-700 uppercase tracking-wider">
-                REPAYMENT FREQUENCY *
-              </label>
-              <div className="grid grid-cols-3 gap-3">
-                {(['Per Day', 'Per Week', 'Per Month'] as RepaymentFrequency[]).map((freq) => (
-                  <button
-                    key={freq}
-                    type="button"
-                    onClick={() => setRepaymentFrequency(freq)}
-                    className={`py-3 text-xs sm:text-sm font-extrabold rounded-2xl border-2 transition-all ${
-                      repaymentFrequency === freq
-                        ? 'bg-teal-50 text-[#0d9488] border-[#0d9488] ring-2 ring-[#0d9488]/15 shadow-2xs'
-                        : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-                    }`}
-                  >
-                    {freq}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* LOAN CLOSE / TENURE DROPDOWN */}
-            <div className="space-y-2 pt-1">
-              <label className="block text-xs font-black text-slate-700 uppercase tracking-wider">
-                LOAN CLOSE / DURATION (TENURE) *
-              </label>
-              <div className="relative flex items-center">
-                <div className="absolute left-4 text-[#0d9488] pointer-events-none">
-                  <Calendar className="w-5 h-5" />
+              {profilePicture && (
+                <div className="mt-2 w-20 h-20 rounded-2xl overflow-hidden border-2 border-slate-200 relative shadow-md">
+                  <img src={profilePicture} alt="Profile Preview" className="w-full h-full object-cover" />
                 </div>
-                <select
-                  value={loanTenure}
-                  onChange={(e) => setLoanTenure(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-12 pr-4 py-3.5 text-sm font-black text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0d9488] appearance-none cursor-pointer"
-                >
-                  {tenureOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              )}
             </div>
 
-            {/* SAVE BUTTON */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white font-extrabold py-4 rounded-2xl shadow-lg shadow-teal-700/20 flex items-center justify-center gap-2 transition-all active:scale-[0.99] disabled:opacity-60 text-base sm:text-lg mt-6"
-            >
-              <CheckCircle2 className="w-6 h-6" />
-              {loading ? 'Saving Customer...' : 'Save Customer'}
-            </button>
+            {/* Submit Button */}
+            <div className="pt-4">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white py-4 rounded-2xl text-base font-black shadow-xl shadow-teal-700/25 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <CheckCircle2 className="w-5 h-5" />
+                {loading ? 'Saving...' : existingCustomer ? 'Update Customer Loan' : 'Save Customer & Loan'}
+              </button>
+            </div>
           </form>
         </div>
       </main>
