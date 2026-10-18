@@ -14,6 +14,7 @@ export interface Customer {
   remainingAmount: number;
   profilePicture?: string;
   repaymentFrequency: RepaymentFrequency;
+  loanTenure?: string;
   status: CustomerStatus;
   userId: string;
   createdAt: string;
@@ -58,7 +59,8 @@ export type ActiveScreen =
   | 'CUSTOMER_DETAILS'
   | 'TRANSACTION_LEDGER'
   | 'PROFILE'
-  | 'SETTINGS'
-  | 'BUSINESS_SETTINGS'
+  | 'INTEREST_RATE'
   | 'PRIVACY_POLICY'
-  | 'TERMS_CONDITIONS';
+  | 'TERMS_CONDITIONS'
+  | 'ABOUT_APP'
+  | 'HELP_SUPPORT';

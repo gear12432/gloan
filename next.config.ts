@@ -19,8 +19,8 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
-  output: 'export',
-  basePath: basePath,
+  // output: 'export',
+  // basePath: basePath,
   images: {
     unoptimized: true,
     remotePatterns: [

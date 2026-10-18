@@ -11,10 +11,11 @@ import TransactionLedgerView from '@/components/TransactionLedgerView';
 import NotificationModal from '@/components/NotificationModal';
 import ProfileView from '@/components/ProfileView';
 import ProfileModal from '@/components/ProfileModal';
-import SettingsView from '@/components/SettingsView';
-import BusinessSettingsView from '@/components/BusinessSettingsView';
+import InterestRateView from '@/components/InterestRateView';
 import PrivacyPolicyView from '@/components/PrivacyPolicyView';
 import TermsConditionsView from '@/components/TermsConditionsView';
+import AboutAppView from '@/components/AboutAppView';
+import HelpSupportView from '@/components/HelpSupportView';
 import { Customer, ActiveScreen } from '@/types/finance';
 
 function MainApp() {
@@ -165,44 +166,38 @@ function MainApp() {
           }}
           onOpenNotifications={() => setIsNotificationOpen(true)}
           onOpenProfileModal={() => setActiveScreen('PROFILE')}
-          onOpenSettings={() => setActiveScreen('SETTINGS')}
         />
       )}
 
       {activeScreen === 'PROFILE' && (
         <ProfileView
           onBack={() => setActiveScreen('DASHBOARD')}
-        />
-      )}
-
-      {activeScreen === 'SETTINGS' && (
-        <SettingsView
-          onBack={() => setActiveScreen('DASHBOARD')}
-          onNavigateProfile={() => setActiveScreen('PROFILE')}
-          onNavigateBusinessSettings={() => setActiveScreen('BUSINESS_SETTINGS')}
+          onNavigateInterestRate={() => setActiveScreen('INTEREST_RATE')}
           onNavigatePrivacy={() => setActiveScreen('PRIVACY_POLICY')}
           onNavigateTerms={() => setActiveScreen('TERMS_CONDITIONS')}
-          currentTheme={theme}
-          onToggleTheme={handleToggleTheme}
+          onNavigateAbout={() => setActiveScreen('ABOUT_APP')}
+          onNavigateHelp={() => setActiveScreen('HELP_SUPPORT')}
         />
       )}
 
-      {activeScreen === 'BUSINESS_SETTINGS' && (
-        <BusinessSettingsView
-          onBack={() => setActiveScreen('SETTINGS')}
-        />
+      {activeScreen === 'INTEREST_RATE' && (
+        <InterestRateView onBack={() => setActiveScreen('PROFILE')} />
       )}
 
       {activeScreen === 'PRIVACY_POLICY' && (
-        <PrivacyPolicyView
-          onBack={() => setActiveScreen('SETTINGS')}
-        />
+        <PrivacyPolicyView onBack={() => setActiveScreen('PROFILE')} />
       )}
 
       {activeScreen === 'TERMS_CONDITIONS' && (
-        <TermsConditionsView
-          onBack={() => setActiveScreen('SETTINGS')}
-        />
+        <TermsConditionsView onBack={() => setActiveScreen('PROFILE')} />
+      )}
+
+      {activeScreen === 'ABOUT_APP' && (
+        <AboutAppView onBack={() => setActiveScreen('PROFILE')} />
+      )}
+
+      {activeScreen === 'HELP_SUPPORT' && (
+        <HelpSupportView onBack={() => setActiveScreen('PROFILE')} />
       )}
 
       {activeScreen === 'ADD_CUSTOMER' && (
@@ -237,7 +232,7 @@ function MainApp() {
         <TransactionLedgerView
           customer={currentCustomer}
           transactions={transactions}
-          userProfile={null}
+          userProfile={userProfile}
           onBack={() => setActiveScreen('CUSTOMER_DETAILS')}
         />
       )}

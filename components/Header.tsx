@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Bell, Search, User as UserIcon, Settings } from 'lucide-react';
+import { Bell, Search, User as UserIcon } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 interface HeaderProps {
@@ -9,7 +9,6 @@ interface HeaderProps {
   setSearchQuery: (query: string) => void;
   onOpenNotifications: () => void;
   onOpenProfileModal: () => void;
-  onOpenSettings?: () => void;
 }
 
 export default function Header({
@@ -17,7 +16,6 @@ export default function Header({
   setSearchQuery,
   onOpenNotifications,
   onOpenProfileModal,
-  onOpenSettings,
 }: HeaderProps) {
   const { userProfile } = useAuth();
 
@@ -64,7 +62,7 @@ export default function Header({
             {businessName}
           </button>
 
-          {/* Right Actions: Notifications & Settings */}
+          {/* Right Actions: Notifications */}
           <div className="flex items-center gap-2">
             <button
               onClick={onOpenNotifications}
@@ -75,13 +73,6 @@ export default function Header({
               <span className="absolute top-1 right-1 w-4 h-4 bg-amber-500 text-white font-black text-[10px] rounded-full flex items-center justify-center border border-[#0d9488]">
                 4
               </span>
-            </button>
-            <button
-              onClick={onOpenSettings}
-              className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors active:scale-95"
-              title="Settings"
-            >
-              <Settings className="w-5 h-5 text-white" strokeWidth={2.5} />
             </button>
           </div>
         </div>

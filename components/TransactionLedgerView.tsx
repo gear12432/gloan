@@ -7,7 +7,11 @@ import {
   Plus, 
   TrendingUp, 
   TrendingDown, 
-  FileText 
+  FileText,
+  Calendar,
+  Receipt,
+  ChevronRight,
+  Wallet
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Customer, Transaction, UserProfile } from '@/types/finance';
@@ -55,19 +59,19 @@ export default function TransactionLedgerView({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
-      className="min-h-screen bg-[#f3f6f9] pb-12"
+      className="min-h-screen bg-[#f3f6f9] pb-6"
     >
-      {/* Top Header */}
+      {/* Top Header - White Text & Icons (Plus button removed, larger Print icon) */}
       <div className="bg-[#0d9488] text-white py-5 px-4 sm:px-6 rounded-b-[2rem] shadow-md flex items-center justify-between">
         <button
           onClick={onBack}
-          className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+          className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5 text-white" />
         </button>
 
         <div className="text-center">
-          <h1 className="text-sm sm:text-base font-extrabold uppercase tracking-wide">
+          <h1 className="text-sm sm:text-base font-extrabold uppercase tracking-wide text-white">
             TRANSACTION LEDGER
           </h1>
           <p className="text-xs text-teal-100 font-semibold mt-0.5">
@@ -75,74 +79,74 @@ export default function TransactionLedgerView({
           </p>
         </div>
 
-        {/* Right Header Actions */}
+        {/* Right Header Actions - Only larger Print icon */}
         <div className="flex items-center gap-1.5">
           <button
             onClick={handleOpenFullStatement}
-            className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+            className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
             title="Print Statement"
           >
-            <Printer className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setIsRecordModalOpen(true)}
-            className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
-            title="Record Payment"
-          >
-            <Plus className="w-5 h-5" />
+            <Printer className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </button>
         </div>
       </div>
 
       <main className="max-w-2xl mx-auto px-4 sm:px-6 mt-5 space-y-4">
-        {/* Current Loan Amount Card */}
-        <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80 flex items-center justify-between">
-          <div>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
-              CURRENT LOAN AMOUNT
-            </p>
-            <p className="text-2xl sm:text-3xl font-black text-[#0d9488] mt-0.5">
-              ₹{currentRemaining.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-            </p>
+        {/* Single Line Row for Current Loan Amount (with Black Wallet Icon), Total Paid, and Total Charges (Bigger & Bolder Text) */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
+          {/* 1. Current Loan Amount with Black Wallet Icon */}
+          <div className="bg-white rounded-2xl p-3.5 sm:p-5 shadow-sm border border-slate-200/80 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-black text-slate-800 uppercase tracking-wider">
+                <Wallet className="w-4 h-4 text-slate-900 shrink-0" />
+                <span className="truncate">Loan Amt</span>
+              </div>
+              <p className="text-base sm:text-xl font-black text-[#0d9488] mt-1.5">
+                ₹{currentRemaining.toLocaleString('en-IN', { minimumFractionDigits: 0 })}
+              </p>
+            </div>
           </div>
-          <button
-            onClick={() => setIsRecordModalOpen(true)}
-            className="bg-[#0d9488] hover:bg-[#0f766e] text-white text-xs sm:text-sm font-bold py-2.5 px-4 sm:px-5 rounded-xl shadow-md shadow-teal-700/20 flex items-center gap-1.5 transition-all active:scale-95"
-          >
-            <Plus className="w-4 h-4" />
-            Add Payment
-          </button>
+
+          {/* 2. Total Paid */}
+          <div className="bg-emerald-50/80 border border-emerald-200 rounded-2xl p-3.5 sm:p-5 shadow-2xs flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-black text-emerald-800 uppercase tracking-wider">
+                <TrendingUp className="w-4 h-4 text-emerald-700 shrink-0" />
+                <span className="truncate">Total Paid</span>
+              </div>
+              <p className="text-base sm:text-xl font-black text-emerald-600 mt-1.5">
+                +₹{totalPaid.toLocaleString('en-IN', { minimumFractionDigits: 0 })}
+              </p>
+            </div>
+          </div>
+
+          {/* 3. Total Charges */}
+          <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-3.5 sm:p-5 shadow-2xs flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-black text-amber-800 uppercase tracking-wider">
+                <TrendingDown className="w-4 h-4 text-amber-700 shrink-0" />
+                <span className="truncate">Charges</span>
+              </div>
+              <p className="text-base sm:text-xl font-black text-amber-600 mt-1.5">
+                -₹{totalCharges.toFixed(0)}
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Summary Stats Row */}
-        <div className="grid grid-cols-2 gap-3 sm:gap-4">
-          {/* TOTAL PAID Card */}
-          <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-4 sm:p-5 shadow-2xs">
-            <div className="flex items-center gap-1.5 text-emerald-700 font-extrabold text-[10px] sm:text-xs uppercase tracking-wider">
-              <TrendingUp className="w-4 h-4" />
-              TOTAL PAID
-            </div>
-            <p className="text-lg sm:text-xl font-black text-emerald-600 mt-1">
-              +₹{totalPaid.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-            </p>
-          </div>
+        {/* Add Payment Action Button */}
+        <button
+          onClick={() => setIsRecordModalOpen(true)}
+          className="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white text-xs sm:text-sm font-bold py-3 px-5 rounded-2xl shadow-md shadow-teal-700/20 flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
+        >
+          <Plus className="w-4 h-4 text-white" />
+          Add Payment Entry
+        </button>
 
-          {/* TOTAL CHARGES Card */}
-          <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4 sm:p-5 shadow-2xs">
-            <div className="flex items-center gap-1.5 text-amber-700 font-extrabold text-[10px] sm:text-xs uppercase tracking-wider">
-              <TrendingDown className="w-4 h-4" />
-              TOTAL CHARGES
-            </div>
-            <p className="text-lg sm:text-xl font-black text-amber-600 mt-1">
-              -₹{totalCharges.toFixed(2)}
-            </p>
-          </div>
-        </div>
-
-        {/* REAL-TIME LEDGER ENTRIES */}
-        <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80 space-y-4">
+        {/* REAL-TIME LEDGER ENTRIES - ZERO SIDE GAPS, EXTENDS TO BOTTOM */}
+        <div className="bg-white rounded-none sm:rounded-3xl py-5 sm:py-6 shadow-sm border-y sm:border border-slate-200/80 space-y-4 px-0 -mx-4 sm:mx-0 mb-6">
           {/* Section Header */}
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="flex items-center justify-between pb-3 px-4 sm:px-6 border-b border-slate-100">
             <div className="flex items-center gap-2">
               <FileText className="w-4 h-4 text-[#0d9488]" />
               <h2 className="text-xs sm:text-sm font-extrabold text-slate-800 uppercase tracking-wider">
@@ -153,9 +157,9 @@ export default function TransactionLedgerView({
             <div className="flex items-center gap-2">
               <button
                 onClick={handleOpenFullStatement}
-                className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-1.5 px-3 rounded-lg flex items-center gap-1 transition-colors"
+                className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-1.5 px-3 rounded-lg flex items-center gap-1 transition-colors cursor-pointer"
               >
-                <Printer className="w-3.5 h-3.5" />
+                <Printer className="w-3.5 h-3.5 text-slate-700" />
                 Print
               </button>
               <span className="text-xs font-medium text-slate-400">
@@ -164,10 +168,10 @@ export default function TransactionLedgerView({
             </div>
           </div>
 
-          {/* Entries List */}
-          <div className="space-y-3">
+          {/* Entries List - Zero side gaps, full width edge-to-edge */}
+          <div className="space-y-0 sm:space-y-2.5 w-full px-0">
             {custTxList.length === 0 ? (
-              <div className="text-center py-8 text-slate-400 text-xs">
+              <div className="text-center py-8 text-slate-400 text-xs px-4">
                 <p className="font-semibold">No payment entries recorded yet.</p>
                 <p className="mt-1 text-[11px]">Click &quot;Add Payment&quot; above to record a payment.</p>
               </div>
@@ -176,35 +180,37 @@ export default function TransactionLedgerView({
                 <div
                   key={tx.id}
                   onClick={() => handleOpenSingleInvoice(tx)}
-                  className="bg-slate-50 hover:bg-teal-50/50 border border-slate-200/80 hover:border-teal-300 rounded-2xl p-4 transition-all cursor-pointer flex items-center justify-between shadow-2xs"
+                  className="bg-slate-50 hover:bg-teal-50/50 border-b sm:border sm:rounded-2xl border-slate-200/80 hover:border-teal-300 p-4 sm:p-4 transition-all cursor-pointer flex items-center justify-between shadow-none sm:shadow-2xs w-full rounded-none"
                 >
-                  <div className="flex items-center gap-3">
-                    {/* Avatar */}
-                    <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-slate-200 bg-amber-500 text-white font-extrabold flex items-center justify-center text-sm uppercase">
-                      {customer.customerName.charAt(0)}
+                  <div className="flex items-center gap-3 min-w-0">
+                    {/* Relevant Icon */}
+                    <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-slate-200 bg-teal-50 text-[#0d9488] font-extrabold flex items-center justify-center shrink-0">
+                      <Receipt className="w-5 h-5 text-[#0d9488]" />
                     </div>
 
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm sm:text-base font-bold text-slate-900">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-sm sm:text-base font-bold text-slate-900 truncate">
                           {customer.customerName}
                         </span>
                         <span className="bg-emerald-100 text-emerald-800 text-[9px] sm:text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase">
                           {tx.status}
                         </span>
                       </div>
-                      <p className="text-[11px] sm:text-xs font-medium text-slate-500 mt-0.5">
+                      <p className="text-[11px] sm:text-xs font-medium text-slate-500 mt-0.5 flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                         {tx.type} • {tx.date}
                       </p>
                     </div>
                   </div>
 
-                  <div className="text-right">
+                  <div className="text-right shrink-0 pl-2">
                     <p className="text-sm sm:text-base font-black text-emerald-600">
                       +₹{tx.amount.toFixed(2)}
                     </p>
-                    <p className="text-[10px] sm:text-[11px] font-bold text-[#0d9488] hover:underline mt-0.5">
-                      View Invoice &gt;
+                    <p className="text-[10px] sm:text-[11px] font-bold text-[#0d9488] hover:underline mt-0.5 flex items-center justify-end gap-0.5">
+                      View Invoice
+                      <ChevronRight className="w-3.5 h-3.5 text-[#0d9488]" />
                     </p>
                   </div>
                 </div>

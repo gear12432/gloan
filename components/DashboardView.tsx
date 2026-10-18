@@ -12,7 +12,6 @@ interface DashboardViewProps {
   onSelectCustomer: (customer: Customer) => void;
   onOpenNotifications: () => void;
   onOpenProfileModal: () => void;
-  onOpenSettings: () => void;
 }
 
 type FilterType = 'PENDING' | 'SUCCESSFUL' | 'ALL';
@@ -23,7 +22,6 @@ export default function DashboardView({
   onSelectCustomer,
   onOpenNotifications,
   onOpenProfileModal,
-  onOpenSettings,
 }: DashboardViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterType>('PENDING');
@@ -72,7 +70,6 @@ export default function DashboardView({
         setSearchQuery={setSearchQuery}
         onOpenNotifications={onOpenNotifications}
         onOpenProfileModal={onOpenProfileModal}
-        onOpenSettings={onOpenSettings}
       />
 
       {/* Main Content Area - Full width responsive container */}

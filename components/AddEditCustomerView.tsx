@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { 
   ArrowLeft, 
-  RotateCw, 
   User, 
   Phone, 
   MapPin, 
@@ -11,10 +10,11 @@ import {
   Percent, 
   Calculator, 
   Camera, 
-  CheckCircle2 
+  CheckCircle2,
+  Calendar
 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { Customer, RepaymentFrequency, CustomerStatus } from '@/types/finance';
+import { Customer, RepaymentFrequency } from '@/types/finance';
 import { useAuth } from '@/context/AuthContext';
 import FloatingInput from './ui/FloatingInput';
 
@@ -48,7 +48,9 @@ export default function AddEditCustomerView({
   const [repaymentFrequency, setRepaymentFrequency] = useState<RepaymentFrequency>(
     existingCustomer?.repaymentFrequency || 'Per Week'
   );
-  const [status, setStatus] = useState<CustomerStatus>(existingCustomer?.status || 'PENDING');
+  const [loanTenure, setLoanTenure] = useState<string>(
+    existingCustomer?.loanTenure || '1 Month'
+  );
   const [profilePicture, setProfilePicture] = useState<string>(existingCustomer?.profilePicture || '');
 
   const [loading, setLoading] = useState(false);
@@ -106,7 +108,8 @@ export default function AddEditCustomerView({
           remainingAmount: Math.max(0, subTotal - (existingCustomer.totalPaid || 0)),
           profilePicture,
           repaymentFrequency,
-          status,
+          loanTenure,
+          status: existingCustomer.status || 'PENDING',
         });
       } else {
         await addCustomer({
@@ -119,7 +122,8 @@ export default function AddEditCustomerView({
           subTotalLoanAmount: subTotal,
           profilePicture,
           repaymentFrequency,
-          status,
+          loanTenure,
+          status: 'PENDING',
         });
       }
       onSaved();
@@ -130,6 +134,22 @@ export default function AddEditCustomerView({
       setLoading(false);
     }
   };
+
+  // Generate 1 Month to 12 Months (1 Year) tenure options
+  const tenureOptions = [
+    '1 Month',
+    '2 Months',
+    '3 Months',
+    '4 Months',
+    '5 Months',
+    '6 Months',
+    '7 Months',
+    '8 Months',
+    '9 Months',
+    '10 Months',
+    '11 Months',
+    '12 Months (1 Year)'
+  ];
 
   return (
     <motion.div 
@@ -162,39 +182,32 @@ export default function AddEditCustomerView({
             </div>
           )}
 
-          <form onSubmit={handleSave} className="space-y-5 pb-8">
-            {/* Customer ID with Regenerate Button */}
-            <div className="relative">
-              <div className="absolute right-3.5 top-3.5 z-20">
-                <button
-                  type="button"
-                  onClick={() => setCustomerId(generateNewId())}
-                  className="text-xs font-bold text-[#0d9488] hover:underline flex items-center gap-1 bg-teal-50 px-3 py-1.5 rounded-lg border border-teal-100"
-                >
-                  <RotateCw className="w-3.5 h-3.5" />
-                  Regenerate
-                </button>
-              </div>
-              <FloatingInput
-                label="Customer ID"
+          <form onSubmit={handleSave} className="space-y-5">
+            {/* Customer ID */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-black text-slate-700 uppercase tracking-wider">
+                Customer ID (Auto)
+              </label>
+              <input
+                type="text"
                 value={customerId}
-                onChange={(e) => setCustomerId(e.target.value)}
-                required
+                disabled
+                className="w-full bg-slate-100 border border-slate-200 rounded-2xl px-4 py-3.5 text-sm font-bold text-slate-500 cursor-not-allowed"
               />
             </div>
 
             {/* Customer Name */}
             <FloatingInput
-              label="Customer Name"
+              label="Customer Full Name *"
               icon={User}
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
               required
             />
 
-            {/* Customer Mobile Number */}
+            {/* Mobile Number */}
             <FloatingInput
-              label="Customer Mobile Number"
+              label="Mobile Number *"
               icon={Phone}
               type="tel"
               value={mobileNumber}
@@ -212,7 +225,7 @@ export default function AddEditCustomerView({
 
             {/* Loan Amount */}
             <FloatingInput
-              label="Loan Amount (₹)"
+              label="Loan Amount (₹) *"
               icon={IndianRupee}
               type="number"
               value={loanAmount}
@@ -299,23 +312,27 @@ export default function AddEditCustomerView({
               </div>
             </div>
 
-            {/* STATUS */}
+            {/* LOAN CLOSE / TENURE DROPDOWN */}
             <div className="space-y-2 pt-1">
               <label className="block text-xs font-black text-slate-700 uppercase tracking-wider">
-                STATUS
+                LOAN CLOSE / DURATION (TENURE) *
               </label>
-              <button
-                type="button"
-                onClick={() => setStatus(status === 'PENDING' ? 'SUCCESSFUL' : 'PENDING')}
-                className={`w-full py-4 px-4 rounded-2xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${
-                  status === 'PENDING'
-                    ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20'
-                    : 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
-                }`}
-              >
-                <span className="w-3 h-3 rounded-full bg-white" />
-                {status === 'PENDING' ? 'Pending (Selected)' : 'Successful (Selected)'}
-              </button>
+              <div className="relative flex items-center">
+                <div className="absolute left-4 text-[#0d9488] pointer-events-none">
+                  <Calendar className="w-5 h-5" />
+                </div>
+                <select
+                  value={loanTenure}
+                  onChange={(e) => setLoanTenure(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-12 pr-4 py-3.5 text-sm font-black text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0d9488] appearance-none cursor-pointer"
+                >
+                  {tenureOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             {/* SAVE BUTTON */}

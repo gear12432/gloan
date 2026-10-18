@@ -25,6 +25,7 @@ import {
 import { auth, db, testFirebaseConnection } from '@/lib/firebase';
 import { handleFirestoreError, OperationType } from '@/lib/error-handler';
 import { Customer, Transaction, UserProfile, RepaymentFrequency, CustomerStatus } from '@/types/finance';
+import { getTranslation } from '@/lib/translations';
 
 interface AuthContextType {
   user: FirebaseUser | null;
@@ -42,6 +43,7 @@ interface AuthContextType {
   recordPayment: (customer: Customer, amount: number, description: string) => Promise<void>;
   updateProfile: (data: Partial<UserProfile>) => Promise<void>;
   updateProfileName: (businessName: string, fullName: string) => Promise<void>;
+  t: (key: string) => string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -80,6 +82,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               businessName: 'KH LOAN',
               mobileNumber: '+91 98765 43210',
               email: currentUser.email || 'user@business.com',
+              theme: 'light',
+              language: 'EN',
               createdAt: new Date().toISOString()
             };
             await setDoc(userDocRef, newProfile);
@@ -93,6 +97,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             businessName: 'KH LOAN',
             mobileNumber: '+91 98765 43210',
             email: currentUser.email || 'user@business.com',
+            theme: 'light',
+            language: 'EN',
             createdAt: new Date().toISOString()
           });
         }
@@ -323,6 +329,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await updateProfile({ businessName, fullName });
   };
 
+  const t = (key: string): string => {
+    const lang = userProfile?.language || 'EN';
+    return getTranslation(lang, key);
+  };
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -339,7 +350,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       deleteCustomer,
       recordPayment,
       updateProfile,
-      updateProfileName
+      updateProfileName,
+      t
     }}>
       {children}
     </AuthContext.Provider>

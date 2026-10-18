@@ -75,38 +75,38 @@ export default function FinancialLedgerStatementModal({
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-1 sm:p-4 overflow-y-auto">
       <div className="bg-white rounded-2xl sm:rounded-3xl max-w-2xl w-full p-2 sm:p-5 shadow-2xl border border-slate-100 my-auto">
         
-        {/* Top Control Bar */}
-        <div className="flex items-center justify-between pb-2 sm:pb-3 border-b border-slate-100 mb-2 sm:mb-3 gap-2 flex-wrap px-1">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-xl bg-emerald-50 text-[#037244]">
-              <Building2 className="w-5 h-5" />
+        {/* Top Control Bar - Single Line */}
+        <div className="flex items-center justify-between pb-2 sm:pb-3 border-b border-slate-100 mb-2 sm:mb-3 gap-1 sm:gap-2 flex-nowrap px-1">
+          <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+            <div className="p-1.5 rounded-xl bg-emerald-50 text-[#037244] shrink-0">
+              <Building2 className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <div>
-              <h2 className="text-xs sm:text-base font-extrabold text-slate-900">
+            <div className="min-w-0">
+              <h2 className="text-[11px] sm:text-base font-extrabold text-slate-900 truncate">
                 Official Invoice Statement
               </h2>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 flex-nowrap">
             <button
               onClick={handlePrint}
-              className="bg-[#037244] hover:bg-[#025a35] text-white font-extrabold text-[11px] sm:text-xs py-1.5 px-2.5 sm:px-4 rounded-xl flex items-center gap-1 shadow-sm transition-all active:scale-95"
+              className="bg-[#037244] hover:bg-[#025a35] text-white font-extrabold text-[10px] sm:text-xs py-1 px-2 sm:px-3.5 rounded-xl flex items-center gap-1 shadow-sm transition-all active:scale-95 whitespace-nowrap cursor-pointer"
             >
-              <Printer className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              Print
+              <Printer className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Print</span>
             </button>
             <button
               onClick={handleDownloadJpg}
               disabled={downloading}
-              className="bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-[11px] sm:text-xs py-1.5 px-2.5 sm:px-4 rounded-xl flex items-center gap-1 shadow-sm transition-all disabled:opacity-60 active:scale-95"
+              className="bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-[10px] sm:text-xs py-1 px-2 sm:px-3.5 rounded-xl flex items-center gap-1 shadow-sm transition-all disabled:opacity-60 active:scale-95 whitespace-nowrap cursor-pointer"
             >
-              <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              {downloading ? 'Exporting...' : 'Download JPG'}
+              <Download className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>{downloading ? 'Export...' : 'Download'}</span>
             </button>
             <button
               onClick={onClose}
-              className="p-1 rounded-full text-slate-400 hover:text-slate-600 transition-colors ml-1"
+              className="p-1 rounded-full text-slate-400 hover:text-slate-600 transition-colors shrink-0 cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
